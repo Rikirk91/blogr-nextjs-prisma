@@ -1,17 +1,18 @@
 import React from "react"
-import { GetStaticProps } from "next"
+import { GetStaticProps, GetServerSideProps } from "next"
 import Layout from "../components/Layout"
 import Post, { PostProps } from "../components/Post"
 import prisma from '../lib/prisma';
+import useSWR from 'swr'
+import fetcher from '../lib/fetcher'
 
-export const getStaticProps: GetStaticProps = async () => {
+
+export const getServerSideProps: GetServerSideProps = async () => {
   const feed = await prisma.post.findMany({
     where: { published: true }
   });
-
   return {
     props: { feed },
-    revalidate: 1
   }
 }
 
@@ -20,6 +21,7 @@ type Props = {
 }
 
 const Blog: React.FC<Props> = (props) => {
+
   return (
     <Layout>
       <div className="page">
